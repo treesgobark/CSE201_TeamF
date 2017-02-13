@@ -19,7 +19,7 @@ public class GameBoard extends JFrame implements ActionListener {
 	private JButton[][] buttons = new JButton[7][6];
 	private JButton autoOnceButton = new JButton("Auto-Game");
 	private JButton auto10Button = new JButton("Auto-Game x10");
-	private JButton auto100Button = new JButton("Auto-Game x100");
+	private JButton autoCustomButton = new JButton("Auto-Game x#");
 	private JButton clearButton = new JButton("Clear");
 	private JLabel barLabel = new JLabel();
 	private int[][] iconColor = new int[7][6];
@@ -56,7 +56,7 @@ public class GameBoard extends JFrame implements ActionListener {
 
 		autoOnceButton.addActionListener(this);
 		auto10Button.addActionListener(this);
-		auto100Button.addActionListener(this);
+		autoCustomButton.addActionListener(this);
 		clearButton.addActionListener(this);
 
 		JToolBar toolbar = new JToolBar();
@@ -65,7 +65,7 @@ public class GameBoard extends JFrame implements ActionListener {
 		toolbar.addSeparator();
 		toolbar.add(auto10Button);
 		toolbar.addSeparator();
-		toolbar.add(auto100Button);
+		toolbar.add(autoCustomButton);
 		toolbar.addSeparator();
 		toolbar.add(clearButton);
 		toolbar.addSeparator();
@@ -90,11 +90,11 @@ public class GameBoard extends JFrame implements ActionListener {
 		for (int j = 0; j < buttons[0].length; j++)
 			for (int i = 0; i < buttons.length; i++)
 				if (e.getSource() == buttons[i][j]) {
-//					if (buttonPress(i)) {
+					if (buttonPress(i)) {
 						if (!checkForWin(0))
 							compMove();
 						checkForResolution();
-//					}
+					}
 				}
 		if (e.getSource() == clearButton) {
 			resetBoard();
@@ -103,9 +103,16 @@ public class GameBoard extends JFrame implements ActionListener {
 		} else if (e.getSource() == auto10Button) {
 			for (int i = 0; i < 10; i++)
 				autoGame();
-		} else if (e.getSource() == auto100Button) {
-			for (int i = 0; i < 100; i++)
-				autoGame();
+		} else if (e.getSource() == autoCustomButton) {
+			int number = 0;
+			try {
+			number = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter the number of games you wish to automate. (Less than or equal to 10,000)"));
+			} catch (NumberFormatException e1) {
+				JOptionPane.showMessageDialog(this, "That's not a number.");
+			}
+			if (number <= 10000)
+				for (int i = 0; i < number; i++)
+					autoGame();
 		}
 	}
 
