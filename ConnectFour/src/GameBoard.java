@@ -31,7 +31,7 @@ public class GameBoard extends JFrame implements ActionListener {
 		cb.setVisible(true);
 		cb.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	public GameBoard() {
 		setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		constructComponents();
@@ -90,11 +90,11 @@ public class GameBoard extends JFrame implements ActionListener {
 			resetBoard();
 		}
 	}
-	
+
 	public boolean buttonPress(int x) {
 		boolean loop = true;
 		boolean yIsSafe = true;
-		int y = buttons[0].length-1;
+		int y = buttons[0].length - 1;
 		while (loop) {
 			if (y >= 0) {
 				if (iconColor[x][y] > 0)
@@ -106,6 +106,7 @@ public class GameBoard extends JFrame implements ActionListener {
 				yIsSafe = false;
 			}
 		}
+
 		if (yIsSafe) {
 			if (iconCount == 1) {
 				iconColor[x][y] = iconCount;
@@ -121,21 +122,26 @@ public class GameBoard extends JFrame implements ActionListener {
 				System.out.println("U DID SOMETHING WRONG");
 			}
 		}
+
 		return yIsSafe;
 	}
-	
+
 	public void compMove() {
-//		buttonPress((int)(Math.random()*7));
+		// buttonPress((int)(Math.random()*7));
 		int canWin = -1;
 		int canPreventWin = -1;
-//		int canPreventFork = -1;
+		int canPreventGap = -1;
 		int canCenter = -1;
 		int canCorner = -1;
 		int canEdge = -1;
+
+//		int forkCount = 0;
+		int firstY = -1;
+
 		for (int x = 0; x < buttons.length; x++) {
 			boolean yIsSafe = true;
 			boolean loop = true;
-			int y = buttons[0].length-1;
+			int y = buttons[0].length - 1;
 			while (loop) {
 				if (y >= 0) {
 					if (iconColor[x][y] > 0)
@@ -148,28 +154,48 @@ public class GameBoard extends JFrame implements ActionListener {
 				}
 			}
 			if (yIsSafe) {
+				if (x == 0)
+					firstY = y;
 				int temp = iconColor[x][y];
+
 				iconColor[x][y] = 2;
 				if (checkForWin(0))
 					if (winner == 2)
 						canWin = x;
+
 				iconColor[x][y] = 1;
 				if (checkForWin(0))
 					if (winner == 1)
 						canPreventWin = x;
-				if (x == buttons.length/2)
+				
+				iconColor[x][y] = temp;
+
+				if (checkForGap(x, firstY, 0))
+					canPreventGap = x+2;
+
+				if (x == buttons.length / 2)
 					canCenter = x;
-				else if (x == 0 || x == buttons.length-1)
+				else if (x == 0 || x == buttons.length - 1)
 					canCorner = x;
 				else
 					canEdge = x;
-				iconColor[x][y] = temp;
+
 			}
 		}
+		
+//		System.out.println("canWin == " + canWin);
+//		System.out.println("canPreventWin == " + canPreventWin);
+//		System.out.println("canPreventFork == " + canPreventFork);
+//		System.out.println("canCenter == " + canCenter);
+//		System.out.println("canCorner == " + canCorner);
+//		System.out.println("canEdge == " + canEdge + "\n");
+		
 		if (canWin != -1)
 			buttonPress(canWin);
 		else if (canPreventWin != -1)
 			buttonPress(canPreventWin);
+		else if (canPreventGap != -1)
+			buttonPress(canPreventGap);
 		else if (canCenter != -1)
 			buttonPress(canCenter);
 		else if (canCorner != -1)
@@ -189,108 +215,145 @@ public class GameBoard extends JFrame implements ActionListener {
 			}
 		}
 	}
-	
+
 	public void checkForWin() {
 		if (checkForWin(0)) {
 			if (winner == 1) {
-//				barLabel.setText("Red Wins!");
+				// barLabel.setText("Red Wins!");
 				JOptionPane.showMessageDialog(this, "Red Wins!");
 				resetBoard();
 			}
 			if (winner == 2) {
-//				barLabel.setText("Yellow Wins!");
+				// barLabel.setText("Yellow Wins!");
 				JOptionPane.showMessageDialog(this, "Yellow Wins!");
 				resetBoard();
 			}
 		}
 	}
-	
+
 	public boolean checkForWin(int pos) {
-		if (pos >= buttons.length*buttons[0].length)
+		if (pos >= buttons.length * buttons[0].length)
 			return false;
-		
-		int x = pos%buttons.length;
-		int y = pos/buttons.length;
-		
-//		System.out.print(pos + ": " + x + ", " + y + ": " + iconColor[x][y]);
-		
-//		System.out.print(x + ", ");
-//		System.out.println(y);
-		
+
+		int x = pos % buttons.length;
+		int y = pos / buttons.length;
+
+		// System.out.print(pos + ": " + x + ", " + y + ": " + iconColor[x][y]);
+
+		// System.out.print(x + ", ");
+		// System.out.println(y);
+
 		if (iconColor[x][y] != 0) {
-			if (y-1 >= 0)
-				if (iconColor[x][y] == iconColor[x][y-1])
-					if (checkForWin(x+(y-1)*buttons.length, 1, 0))
+			if (y - 1 >= 0)
+				if (iconColor[x][y] == iconColor[x][y - 1])
+					if (checkForWin(x + (y - 1) * buttons.length, 1, 0))
 						return true;
-			
-			if (x+1 < buttons.length && y-1 >= 0) 
-				if (iconColor[x][y] == iconColor[x+1][y-1])
-					if (checkForWin((x+1)+(y-1)*buttons.length, 1, 1))
+
+			if (x + 1 < buttons.length && y - 1 >= 0)
+				if (iconColor[x][y] == iconColor[x + 1][y - 1])
+					if (checkForWin((x + 1) + (y - 1) * buttons.length, 1, 1))
 						return true;
-			
-			if (x+1 < buttons.length)
-				if (iconColor[x][y] == iconColor[x+1][y])
-					if (checkForWin((x+1)+y*buttons.length, 1, 2))
+
+			if (x + 1 < buttons.length)
+				if (iconColor[x][y] == iconColor[x + 1][y])
+					if (checkForWin((x + 1) + y * buttons.length, 1, 2))
 						return true;
-			
-			if (x+1 < buttons.length && y+1 < buttons[0].length)
-				if (iconColor[x][y] == iconColor[x+1][y+1])
-					if (checkForWin((x+1)+(y+1)*buttons.length, 1, 3))
-						 return true;
-			
-			if (y+1 < buttons[0].length)
-				if (iconColor[x][y] == iconColor[x][y+1])
-					if (checkForWin(x+(y+1)*buttons.length, 1, 4))
-						 return true;
+
+			if (x + 1 < buttons.length && y + 1 < buttons[0].length)
+				if (iconColor[x][y] == iconColor[x + 1][y + 1])
+					if (checkForWin((x + 1) + (y + 1) * buttons.length, 1, 3))
+						return true;
+
+			if (y + 1 < buttons[0].length)
+				if (iconColor[x][y] == iconColor[x][y + 1])
+					if (checkForWin(x + (y + 1) * buttons.length, 1, 4))
+						return true;
 		}
-		
-//		System.out.println();
-		
-		return checkForWin(pos+1);
+
+		// System.out.println();
+
+		return checkForWin(pos + 1);
 	}
-	
+
 	public boolean checkForWin(int pos, int inARow, int direction) {
-		if (pos >= buttons.length*buttons[0].length)
+		if (pos >= buttons.length * buttons[0].length)
 			return false;
-		
-		int x = pos%buttons.length;
-		int y = pos/buttons.length;
-		
+
+		int x = pos % buttons.length;
+		int y = pos / buttons.length;
+
 		if (inARow == 3) {
 			winner = iconColor[x][y];
 			return true;
 		}
-		
-//		System.out.print(pos + ": " + x + ", " + y + "   ");
-		
+
+		// System.out.print(pos + ": " + x + ", " + y + " ");
+
 		if (iconColor[x][y] != 0) {
 			if (direction == 0)
-				if (y-1 >= 0)
-					if (iconColor[x][y] == iconColor[x][y-1])
-						return checkForWin(x+(y-1)*buttons.length, inARow+1, 0);
-			
-			if (direction == 1)	
-				if (x+1 < buttons.length && y-1 >= 0) 
-					if (iconColor[x][y] == iconColor[x+1][y-1])
-						return checkForWin((x+1)+(y-1)*buttons.length, inARow+1, 1);
-			
-			if (direction == 2)	
-				if (x+1 < buttons.length)
-					if (iconColor[x][y] == iconColor[x+1][y])
-						return checkForWin((x+1)+y*buttons.length, inARow+1, 2);
-			
-			if (direction == 3)	
-				if (x+1 < buttons.length && y+1 < buttons[0].length)
-					if (iconColor[x][y] == iconColor[x+1][y+1])
-						return checkForWin((x+1)+(y+1)*buttons.length, inARow+1, 3);
-			
-			if (direction == 4)	
-				if (y+1 < buttons[0].length)
-					if (iconColor[x][y] == iconColor[x][y+1])
-						return checkForWin(x+(y+1)*buttons.length, inARow+1, 4);
+				if (y - 1 >= 0)
+					if (iconColor[x][y] == iconColor[x][y - 1])
+						return checkForWin(x + (y - 1) * buttons.length, inARow + 1, 0);
+
+			if (direction == 1)
+				if (x + 1 < buttons.length && y - 1 >= 0)
+					if (iconColor[x][y] == iconColor[x + 1][y - 1])
+						return checkForWin((x + 1) + (y - 1) * buttons.length, inARow + 1, 1);
+
+			if (direction == 2)
+				if (x + 1 < buttons.length)
+					if (iconColor[x][y] == iconColor[x + 1][y])
+						return checkForWin((x + 1) + y * buttons.length, inARow + 1, 2);
+
+			if (direction == 3)
+				if (x + 1 < buttons.length && y + 1 < buttons[0].length)
+					if (iconColor[x][y] == iconColor[x + 1][y + 1])
+						return checkForWin((x + 1) + (y + 1) * buttons.length, inARow + 1, 3);
+
+			if (direction == 4)
+				if (y + 1 < buttons[0].length)
+					if (iconColor[x][y] == iconColor[x][y + 1])
+						return checkForWin(x + (y + 1) * buttons.length, inARow + 1, 4);
 		}
-		
+
 		return false;
 	}
-	
+
+	public boolean checkForGap(int x, int y, int inARow) {
+//		System.out.println("I checked for a Fork: " + x + ", " + y + ": " + inARow);
+		if (inARow > 3)
+			return true;
+		if (x + 1 < buttons.length - 1) {
+//			System.out.println("Passed the first check");
+			
+			if (inARow == 0 || inARow == 4) {
+//				System.out.println("Passed the second check");
+				if (iconColor[x][y] == 0) {
+//					System.out.println("Passed the third check");
+					if (checkForGap(x + 1, y, inARow + 1))
+						return true;
+				}
+			}
+			
+			if (inARow == 2) {
+//				System.out.println("Passed the second check");
+				if (iconColor[x][y] != 2) {
+//					System.out.println("Passed the third check");
+					if (checkForGap(x + 1, y, inARow + 1))
+						return true;
+				}
+			}
+			
+			if (inARow == 1 || inARow == 3) {
+//				System.out.println("Passed the second check");
+				if (iconColor[x][y] == 1) {
+//					System.out.println("Passed the third check\n");
+					if (checkForGap(x + 1, y, inARow + 1))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
