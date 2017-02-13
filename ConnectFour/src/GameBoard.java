@@ -148,18 +148,18 @@ public class GameBoard extends JFrame implements ActionListener {
 						y--;
 					else
 						loop = false;
-					
+
 				} else {
 					loop = false;
 					yIsSafe = false;
 				}
 			}
-			
+
 			if (yIsSafe) {
-				
+
 				if (x == 0)
 					firstY = y;
-				
+
 				int temp = iconColor[x][y];
 
 				iconColor[x][y] = 2;
@@ -171,15 +171,15 @@ public class GameBoard extends JFrame implements ActionListener {
 				if (checkForWin(0))
 					if (winner == 1)
 						canPreventWin = x;
-				
+
 				iconColor[x][y] = temp;
 
 				if (firstY >= 0) {
 					if (checkForGap(x, firstY, 0))
-						canPreventGap = x+2;
-				
+						canPreventGap = x + 2;
+
 					if (checkForAdjacent(x, firstY, 0))
-						canPreventAdjacent = x+1;
+						canPreventAdjacent = x + 1;
 				}
 
 				if (x == buttons.length / 2)
@@ -193,15 +193,15 @@ public class GameBoard extends JFrame implements ActionListener {
 		}
 
 		System.out.println();
-		
-//		System.out.println("canWin == " + canWin);
-//		System.out.println("canPreventWin == " + canPreventWin);
-//		System.out.println("canPreventGap == " + canPreventGap);
-//		System.out.println("canPreventAdjacent == " + canPreventAdjacent);
-//		System.out.println("canCenter == " + canCenter);
-//		System.out.println("canCorner == " + canCorner);
-//		System.out.println("canEdge == " + canEdge + "\n");
-		
+
+		// System.out.println("canWin == " + canWin);
+		// System.out.println("canPreventWin == " + canPreventWin);
+		// System.out.println("canPreventGap == " + canPreventGap);
+		// System.out.println("canPreventAdjacent == " + canPreventAdjacent);
+		// System.out.println("canCenter == " + canCenter);
+		// System.out.println("canCorner == " + canCorner);
+		// System.out.println("canEdge == " + canEdge + "\n");
+
 		if (canWin != -1)
 			buttonPress(canWin);
 		else if (canPreventWin != -1)
@@ -334,52 +334,53 @@ public class GameBoard extends JFrame implements ActionListener {
 	}
 
 	public boolean checkForGap(int x, int y, int inARow) {
-//		System.out.println("I checked for a Fork: " + x + ", " + y + ": " + inARow);
+		// System.out.println("I checked for a Fork: " + x + ", " + y + ": " +
+		// inARow);
 		if (inARow > 4)
 			return true;
 		if (x < buttons.length) {
-//			System.out.println("Passed the first check");
-			
+			// System.out.println("Passed the first check");
+
 			if (inARow == 0 || inARow == 4) {
-//				System.out.println("Passed the second check");
+				// System.out.println("Passed the second check");
 				if (iconColor[x][y] == 0) {
-//					System.out.println("Passed the third check");
+					// System.out.println("Passed the third check");
 					if (checkForGap(x + 1, y, inARow + 1))
 						return true;
 				}
 			}
-			
+
 			if (inARow == 2) {
-//				System.out.println("Passed the second check");
-				
+				// System.out.println("Passed the second check");
+
 				if (iconCount == 1)
 					if (iconColor[x][y] != 1) {
-	//					System.out.println("Passed the third check");
+						// System.out.println("Passed the third check");
 						if (checkForGap(x + 1, y, inARow + 1))
 							return true;
 					}
-				
+
 				if (iconCount == 2)
 					if (iconColor[x][y] != 2) {
-	//					System.out.println("Passed the third check");
+						// System.out.println("Passed the third check");
 						if (checkForGap(x + 1, y, inARow + 1))
 							return true;
 					}
 			}
-			
+
 			if (inARow == 1 || inARow == 3) {
-//				System.out.println("Passed the second check");
-				
+				// System.out.println("Passed the second check");
+
 				if (iconCount == 1)
 					if (iconColor[x][y] == 2) {
-	//					System.out.println("Passed the third check\n");
+						// System.out.println("Passed the third check\n");
 						if (checkForGap(x + 1, y, inARow + 1))
 							return true;
 					}
-				
+
 				if (iconCount == 2)
 					if (iconColor[x][y] == 1) {
-	//					System.out.println("Passed the third check\n");
+						// System.out.println("Passed the third check\n");
 						if (checkForGap(x + 1, y, inARow + 1))
 							return true;
 					}
@@ -387,27 +388,28 @@ public class GameBoard extends JFrame implements ActionListener {
 		}
 		return false;
 	}
-	
+
 	public boolean checkForAdjacent(int x, int y, int inARow) {
-//		System.out.println("I checked for an adjacent case: " + x + ", " + y + ": " + inARow);
+		// System.out.println("I checked for an adjacent case: " + x + ", " + y
+		// + ": " + inARow);
 		if (inARow > 5)
 			return true;
 		if (x < buttons.length) {
-//			System.out.println("Passed the first check");
-			
+			// System.out.println("Passed the first check");
+
 			if (inARow == 0 || inARow == 1 || inARow == 4 || inARow == 5) {
-//				System.out.println("Passed the second check");
+				// System.out.println("Passed the second check");
 				if (iconColor[x][y] == 0) {
-//					System.out.println("Passed the third check");
+					// System.out.println("Passed the third check");
 					if (checkForAdjacent(x + 1, y, inARow + 1))
 						return true;
 				}
 			}
-			
+
 			if (inARow == 2 || inARow == 3) {
-//				System.out.println("Passed the second check");
+				// System.out.println("Passed the second check");
 				if (iconColor[x][y] == 1) {
-//					System.out.println("Passed the third check\n");
+					// System.out.println("Passed the third check\n");
 					if (checkForAdjacent(x + 1, y, inARow + 1))
 						return true;
 				}
