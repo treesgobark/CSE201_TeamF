@@ -25,8 +25,11 @@ public class GameBoard extends JFrame implements ActionListener {
 	private int[][] iconColor = new int[7][6];
 	private int iconCount = 1;
 	private int winner = 0;
+	@SuppressWarnings("unused")
 	private int redWinCount = 0;
+	@SuppressWarnings("unused")
 	private int yellowWinCount = 0;
+	@SuppressWarnings("unused")
 	private int tieCount = 0;
 	private ImageIcon redCircle = new ImageIcon(getClass().getResource("/resources/Red Circle.png"));
 	private ImageIcon yellowCircle = new ImageIcon(getClass().getResource("/resources/Yellow Circle.png"));
@@ -83,7 +86,8 @@ public class GameBoard extends JFrame implements ActionListener {
 		add(panel);
 		add(toolbar, BorderLayout.PAGE_START);
 		setTitle("8 Queens Problem");
-		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
+//		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
+		barLabel.setText("Red's Turn");
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -91,8 +95,9 @@ public class GameBoard extends JFrame implements ActionListener {
 			for (int i = 0; i < buttons.length; i++)
 				if (e.getSource() == buttons[i][j]) {
 					if (buttonPress(i)) {
-						if (!checkForWin(0))
+						if (!checkForWin(0)) {
 							compMove();
+						}
 						checkForResolution();
 					}
 				}
@@ -133,16 +138,18 @@ public class GameBoard extends JFrame implements ActionListener {
 		}
 
 		if (yIsSafe) {
-			resetBackgrounds();
-			buttons[x][y].setBackground(Color.GREEN);
+//			resetBackgrounds();
+//			buttons[x][y].setBackground(Color.GREEN);
 			if (iconCount == 1) {
 				iconColor[x][y] = iconCount;
 				buttons[x][y].setIcon(redCircle);
 				iconCount++;
+				barLabel.setText("Yellow's Turn");
 			} else if (iconCount == 2) {
 				iconColor[x][y] = iconCount;
 				buttons[x][y].setIcon(yellowCircle);
 				iconCount--;
+				barLabel.setText("Red's Turn");
 			} else {
 				System.out.println("U DID SOMETHING WRONG");
 			}
@@ -284,11 +291,12 @@ public class GameBoard extends JFrame implements ActionListener {
 			tieCount++;
 			resetBoard();
 		}
-		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
+//		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
 	}
 
 	public void resetBoard() {
 		resetBackgrounds();
+		barLabel.setText("Red's Turn");
 		iconCount = 1;
 		iconColor = new int[buttons.length][buttons[0].length];
 		for (int j = 0; j < buttons[0].length; j++) {
@@ -333,7 +341,7 @@ public class GameBoard extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, "It's a tie because you both suck");
 			resetBoard();
 		}
-		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
+//		barLabel.setText("Red's wins: " + redWinCount + ". Yellow's Wins: " + yellowWinCount + ". Ties: " + tieCount + ".");
 	}
 
 	public boolean checkForWin(int pos) {
