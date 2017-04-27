@@ -83,7 +83,7 @@ public class ConnectFourDriver {
 		}
 		if (yIsSafe) {
 			resetBackgrounds();
-			board.getButtons()[x][y].setBackground(Color.GREEN);
+			board.getButtons()[x][y].setBackground(new Color(0, 0, 155));
 			if (board.getIconCount() == 1) {
 				board.getIconColor()[x][y] = board.getIconCount();
 				board.getButtons()[x][y].setIcon(board.getRedCircle());
@@ -192,9 +192,9 @@ public class ConnectFourDriver {
 			}
 		}
 
-		for (int x : movePriorities)
-			System.out.print(x + "            ");
-		System.out.println();
+//		for (int x : movePriorities)
+//			System.out.print(x + "            ");
+//		System.out.println();
 
 		ArrayList<Integer> indexes = new ArrayList<>();
 		int highest = -2096;
@@ -312,7 +312,7 @@ public class ConnectFourDriver {
 				resetBoard();
 			}
 		} else if (checkForTie()) {
-			// tieCount++;
+			tieCount++;
 			JOptionPane.showMessageDialog(board,
 					"<html><font color = \"white\"><font size = \"+100\">It's A Tie!</font></html>");
 			resetBoard();

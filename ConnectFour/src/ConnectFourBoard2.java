@@ -123,8 +123,8 @@ public class ConnectFourBoard2 extends JFrame implements ActionListener {
 		instructionScreen.put("OptionPane.buttonFont",
 				new FontUIResource(new Font("Courier New Italic", Font.BOLD, 30)));
 		instructionScreen.put("OptionPane.border", new EmptyBorder(200, 100, 200, 100));
-		String msg = "<html><center> Score: <br><br> You-CPU-Ties <br>" + driver.getPlayerWinCount() + "-"
-				+ driver.getOpponentWinCount() + "-" + driver.getTieCount() + "<br><br></br></center></html> ";
+		String msg = "<html><center> Score: <br><br> You-CPU <br>" + driver.getPlayerWinCount() + "-"
+				+ driver.getOpponentWinCount() + "<br><br></br></center></html> ";
 		JLabel label = new JLabel(msg);
 		label.setFont(new Font("Courier New Bold Italic", Font.BOLD, 50));
 		label.setForeground(Color.WHITE);
